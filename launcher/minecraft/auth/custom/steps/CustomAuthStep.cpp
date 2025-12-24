@@ -59,7 +59,11 @@ QString CustomAuthStep::requestTemplate()
     "username": "%1",
     "password": "%2",
     "clientToken": "%3",
-    "requestUser": false
+    "requestUser": false,
+    "agent":{
+		"name":"Minecraft",
+		"version":1
+	}
 }
 )XXX";
     } else {
