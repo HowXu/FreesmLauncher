@@ -24,6 +24,20 @@ void AssetUpdateTask::executeTask()
     QUrl indexUrl = assets->url;
     QString localPath = assets->id + ".json";
     auto job = makeShared<NetJob>(tr("Asset index for %1").arg(m_inst->name()), APPLICATION->network());
+    
+    if (APPLICATION->settings()->get("useBMCL").toBool())
+    {
+        auto url = indexUrl.toString();
+        url.replace("https://launchermeta.mojang.com", "https://bmclapi2.bangbang93.com");
+        url.replace("https://launcher.mojang.com", "https://bmclapi2.bangbang93.com");
+        url.replace("https://piston-meta.mojang.com", "https://bmclapi2.bangbang93.com");
+        url.replace("http://launchermeta.mojang.com", "https://bmclapi2.bangbang93.com");
+        url.replace("http://launcher.mojang.com", "https://bmclapi2.bangbang93.com");
+        url.replace("http://piston-meta.mojang.com", "https://bmclapi2.bangbang93.com");
+        url.replace("https://s3.amazonaws.com/Minecraft.Download", "https://bmclapi2.bangbang93.com");
+        url.replace("http://s3.amazonaws.com/Minecraft.Download", "https://bmclapi2.bangbang93.com");
+        indexUrl = QUrl(url);
+    }
 
     auto metacache = APPLICATION->metacache();
     auto entry = metacache->resolveEntry("asset_indexes", localPath);

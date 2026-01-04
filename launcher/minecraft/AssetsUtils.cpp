@@ -298,10 +298,6 @@ QString AssetObject::getLocalPath()
 
 QUrl AssetObject::getUrl()
 {
-    if (APPLICATION->settings()->get("useBMCL").toBool())
-    {
-        return BuildConfig.RESOURCE_BASE_BMCL + getRelPath();
-    }
     return BuildConfig.RESOURCE_BASE + getRelPath();
 }
 

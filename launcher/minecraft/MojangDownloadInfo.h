@@ -58,6 +58,7 @@ struct MojangAssetIndexInfo : public MojangDownloadInfo {
         }
         // HACK
         else {
+            // 这里默认用了amazon S3的镜像，所以对libraries的BMCL镜像替换是无效的
             url = "https://s3.amazonaws.com/Minecraft.Download/indexes/" + id_ + ".json";
         }
         known = false;

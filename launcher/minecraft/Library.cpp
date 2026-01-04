@@ -148,7 +148,20 @@ QList<Net::NetRequest::Ptr> Library::getDownloads(const RuntimeContext& runtimeC
 
         // Don't add a time limit for the libraries cache entry validity
         options |= Net::Download::Option::MakeEternal;
-
+        // here replace the url for download
+        if (APPLICATION->settings()->get("useBMCL").toBool())
+        {
+            // Fabric
+            url.replace("https://meta.fabricmc.net", "https://bmclapi2.bangbang93.com/fabric-meta");
+            url.replace("https://maven.fabricmc.net", "https://bmclapi2.bangbang93.com/maven");
+            // Forge
+            url.replace("https://files.minecraftforge.net/maven", "https://bmclapi2.bangbang93.com/maven");
+            // NeoForge
+            url.replace("https://maven.neoforged.net/releases", "https://bmclapi2.bangbang93.com/maven");
+            // Libraries
+            url.replace("https://libraries.minecraft.net", "https://bmclapi2.bangbang93.com/maven");
+            // do not change https://resources.download.minecraft.net/ it's fast enough
+        }
         if (sha1.size()) {
             auto dl = Net::ApiDownload::makeCached(url, entry, options);
             dl->addValidator(new Net::ChecksumValidator(QCryptographicHash::Sha1, sha1));
@@ -207,10 +220,6 @@ QList<Net::NetRequest::Ptr> Library::getDownloads(const RuntimeContext& runtimeC
             }
 
             if (m_repositoryURL.isEmpty()) {
-                if (APPLICATION->settings()->get("useBMCL").toBool())
-                {
-                    return BuildConfig.LIBRARY_BASE_BMCL + raw_storage;
-                }
                 return BuildConfig.LIBRARY_BASE + raw_storage;
             }
 
