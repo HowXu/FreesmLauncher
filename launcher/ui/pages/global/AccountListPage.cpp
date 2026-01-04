@@ -42,7 +42,7 @@
 #include <QMenu>
 #include <QPushButton>
 
-#include <QDebug>
+#include <ui/dialogs/YggdrasilLoginDialog.h>
 
 #include "ui/dialogs/CustomLoginDialog.h"
 #include "ui/dialogs/CustomMessageBox.h"
@@ -177,6 +177,17 @@ void AccountListPage::on_actionAddElyby_triggered()
 void AccountListPage::on_actionAddCustom_triggered()
 {
     auto account = CustomLoginDialog::newAccount(this, "Please enter authentication server URL, your username and password.");
+    if (account) {
+        m_accounts->addAccount(account);
+        if (m_accounts->count() == 1) {
+            m_accounts->setDefaultAccount(account);
+        }
+    }
+}
+
+void AccountListPage::on_actionAddYggdrasil_triggered()
+{
+    auto account = YggdrasilLoginDialog::newAccount(this, "Please enter authentication server URL, your username and password.");
     if (account) {
         m_accounts->addAccount(account);
         if (m_accounts->count() == 1) {

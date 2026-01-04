@@ -1,22 +1,8 @@
-// SPDX-License-Identifier: GPL-3.0-only
-/*
- *  Freesm Launcher - Minecraft Launcher
- *  Copyright (C) 2025 so5iso4ka <so5iso4ka@icloud.com>
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, version 3.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
+//
+// Created by HowXu on 2025/12/26.
+//
 
-#include "CustomAuthStep.h"
+#include "YggdrasilAuthStep.h"
 
 #include "Application.h"
 #include "Logging.h"
@@ -24,11 +10,11 @@
 
 #include <utility>
 
-CustomAuthStep::CustomAuthStep(AccountData* data, AuthFlow::Action action, QString password)
+YggdrasilAuthStep::YggdrasilAuthStep(AccountData* data, AuthFlow::Action action, QString password)
     : AuthStep(data), m_password(std::move(password)), m_action(action)
 {}
 
-void CustomAuthStep::perform()
+void YggdrasilAuthStep::perform()
 {
     const QUrl url(authUrl() + requestUrl());
     const QString requestData = fillRequest();
@@ -40,18 +26,18 @@ void CustomAuthStep::perform()
     m_task->setAskRetry(false);
     m_task->addNetAction(m_request);
 
-    connect(m_task.get(), &Task::finished, this, &CustomAuthStep::onRequestDone);
+    connect(m_task.get(), &Task::finished, this, &YggdrasilAuthStep::onRequestDone);
 
     m_task->start();
     qDebug() << "Getting authorization token for " + authType() + " account";
 }
 
-QString CustomAuthStep::requestUrl()
+QString YggdrasilAuthStep::requestUrl()
 {
     return m_action == AuthFlow::Action::Login ? m_data->loginUrl : m_data->refreshUrl;
 }
 
-QString CustomAuthStep::requestTemplate()
+QString YggdrasilAuthStep::requestTemplate()
 {
     if (m_action == AuthFlow::Action::Login) {
         return R"XXX(
@@ -59,21 +45,24 @@ QString CustomAuthStep::requestTemplate()
     "username": "%1",
     "password": "%2",
     "clientToken": "%3",
-    "requestUser": false
+    "requestUser": false,
+    "agent":{
+		"name":"Minecraft",
+		"version":1
+	}
 }
 )XXX";
-    } else {
-        return R"XXX(
+    }
+    return R"XXX(
 {
     "accessToken": "%1",
     "clientToken": "%2",
     "requestUser": false
 }
 )XXX";
-    }
 }
 
-QString CustomAuthStep::fillRequest()
+QString YggdrasilAuthStep::fillRequest()
 {
     if (m_action == AuthFlow::Action::Login) {
         return requestTemplate().arg(m_data->accountLogin, m_password, clientID());
@@ -82,7 +71,7 @@ QString CustomAuthStep::fillRequest()
     }
 }
 
-bool CustomAuthStep::parseResponse()
+bool YggdrasilAuthStep::parseResponse()
 {
     qCDebug(authCredentials()) << *m_response;
     if (m_request->error() != QNetworkReply::NoError) {
@@ -96,14 +85,30 @@ bool CustomAuthStep::parseResponse()
 
     m_data->clientID = jsonResponse["clientToken"].toString();
 
-    auto profile = jsonResponse["selectedProfile"].toObject();
-    m_data->minecraftProfile.id = profile["id"].toString();
-    m_data->minecraftProfile.name = profile["name"].toString();
+    // here process the profiles
+    auto selectedProfile = jsonResponse["selectedProfile"].toObject();
+    auto availableProfiles = jsonResponse["availableProfiles"].toArray();
+    if (!selectedProfile.isEmpty())
+    {
+        m_data->minecraftProfile.id = selectedProfile["id"].toString();
+        m_data->minecraftProfile.name = selectedProfile["name"].toString();
+    }else
+    {
+        if (availableProfiles.size() > 0)
+        {
+            m_data->minecraftProfile.id = availableProfiles[0].toObject()["id"].toString();
+            m_data->minecraftProfile.name = availableProfiles[0].toObject()["name"].toString();
+        }else
+        {
+            qWarning() << "Parse Error: No profile id and name";
+        }
+    }
+    
 
     return true;
 }
 
-void CustomAuthStep::onRequestDone()
+void YggdrasilAuthStep::onRequestDone()
 {
     if (!parseResponse()) {
         emit finished(AccountTaskState::STATE_OFFLINE,

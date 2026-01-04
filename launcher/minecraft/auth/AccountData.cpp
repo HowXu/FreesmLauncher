@@ -423,6 +423,10 @@ QString AccountData::accountDisplayString() const
             }
             return url[2];
         }
+    case AccountType::Yggdrasil:
+            {
+                return "missing";
+            }
         default: {
             return "Invalid Account";
         }

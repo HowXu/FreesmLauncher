@@ -234,6 +234,9 @@ set(MINECRAFT_SOURCES
     minecraft/auth/elyby/ElybyAccount.h
     minecraft/auth/custom/CustomAccount.cpp
     minecraft/auth/custom/CustomAccount.h
+    minecraft/auth/yggdrasil/YggdrasilAccount.cpp
+    minecraft/auth/yggdrasil/YggdrasilAccount.h
+    
 
     minecraft/auth/Parsers.cpp
     minecraft/auth/Parsers.h
@@ -269,6 +272,11 @@ set(MINECRAFT_SOURCES
 
     minecraft/auth/custom/steps/CustomAuthStep.cpp
     minecraft/auth/custom/steps/CustomAuthStep.h
+
+    minecraft/auth/yggdrasil/steps/YggdrasilAuthStep.cpp
+    minecraft/auth/yggdrasil/steps/YggdrasilAuthStep.h
+    minecraft/auth/yggdrasil/steps/YggdrasilProfileStep.h
+    minecraft/auth/yggdrasil/steps/YggdrasilProfileStep.cpp
 
     minecraft/gameoptions/GameOptions.h
     minecraft/gameoptions/GameOptions.cpp
@@ -1100,6 +1108,8 @@ SET(LAUNCHER_SOURCES
     ui/dialogs/ElybyLoginDialog.h
     ui/dialogs/CustomLoginDialog.cpp
     ui/dialogs/CustomLoginDialog.h
+    ui/dialogs/YggdrasilLoginDialog.cpp 
+    ui/dialogs/YggdrasilLoginDialog.h
     ui/dialogs/NewComponentDialog.cpp
     ui/dialogs/NewComponentDialog.h
     ui/dialogs/NewInstanceDialog.cpp
@@ -1280,7 +1290,8 @@ qt_wrap_ui(LAUNCHER_UI
     ui/dialogs/MSALoginDialog.ui
     ui/dialogs/OfflineLoginDialog.ui
     ui/dialogs/ElybyLoginDialog.ui
-        ui/dialogs/CustomLoginDialog.ui
+    ui/dialogs/CustomLoginDialog.ui
+    ui/dialogs/YggdrasilLoginDialog.ui
     ui/dialogs/AboutDialog.ui
     ui/dialogs/ReviewMessageBox.ui
     ui/dialogs/ScrollMessageBox.ui

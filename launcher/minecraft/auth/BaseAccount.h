@@ -96,6 +96,10 @@ class BaseAccount : public QObject, public Usable {
             case AccountType::Offline: {
                 return "offline";
             } break;
+            case AccountType::Yggdrasil:
+            {
+                return "yggdrasil";
+            }
             default: {
                 return "unknown";
             }

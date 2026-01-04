@@ -1,4 +1,7 @@
 #include "LoginWizardPage.h"
+
+#include <ui/dialogs/YggdrasilLoginDialog.h>
+
 #include "minecraft/auth/AccountList.h"
 #include "ui/dialogs/CustomLoginDialog.h"
 #include "ui/dialogs/ElybyLoginDialog.h"
@@ -82,6 +85,22 @@ void LoginWizardPage::on_addCustomButton_clicked()
 {
     wizard()->hide();
     auto account = CustomLoginDialog::newAccount(nullptr, "Please enter authentication server URL, your username and password.");
+    wizard()->show();
+    if (account) {
+        APPLICATION->accounts()->addAccount(account);
+        APPLICATION->accounts()->setDefaultAccount(account);
+        if (wizard()->currentId() == wizard()->pageIds().last()) {
+            wizard()->accept();
+        } else {
+            wizard()->next();
+        }
+    }
+}
+
+void LoginWizardPage::on_addYggdrasilButton_clicked()
+{
+    wizard()->hide();
+    auto account = YggdrasilLoginDialog::newAccount(nullptr, "Please enter authentication server URL, your username and password.");
     wizard()->show();
     if (account) {
         APPLICATION->accounts()->addAccount(account);

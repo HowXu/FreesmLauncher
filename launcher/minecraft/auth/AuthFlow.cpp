@@ -30,49 +30,77 @@
 
 #include <Application.h>
 
+#include "yggdrasil/steps/YggdrasilAuthStep.h"
+#include "yggdrasil/steps/YggdrasilProfileStep.h"
+
+class YggdrasilProfileStep;
+
 AuthFlow::AuthFlow(AccountData* data, Action action, QString password) : Task(), m_data(data)
 {
-    switch (data->type) {
-        case AccountType::MSA: {
-            if (action == Action::DeviceCode) {
+    switch (data->type)
+    {
+    case AccountType::MSA:
+        {
+            if (action == Action::DeviceCode)
+            {
                 auto oauthStep = makeShared<MSADeviceCodeStep>(m_data);
-                connect(oauthStep.get(), &MSADeviceCodeStep::authorizeWithBrowser, this, &AuthFlow::authorizeWithBrowserWithExtra);
+                connect(oauthStep.get(), &MSADeviceCodeStep::authorizeWithBrowser, this,
+                        &AuthFlow::authorizeWithBrowserWithExtra);
                 connect(this, &Task::aborted, oauthStep.get(), &MSADeviceCodeStep::abort);
                 m_steps.append(oauthStep);
-            } else {
+            }
+            else
+            {
                 auto oauthStep = makeShared<MSAStep>(m_data, action == Action::Refresh);
                 connect(oauthStep.get(), &MSAStep::authorizeWithBrowser, this, &AuthFlow::authorizeWithBrowser);
                 m_steps.append(oauthStep);
             }
             m_steps.append(makeShared<XboxUserStep>(m_data));
-            m_steps.append(makeShared<XboxAuthorizationStep>(m_data, &m_data->xboxApiToken, "http://xboxlive.com", "Xbox"));
             m_steps.append(
-                makeShared<XboxAuthorizationStep>(m_data, &m_data->mojangservicesToken, "rp://api.minecraftservices.com/", "Mojang"));
+                makeShared<XboxAuthorizationStep>(m_data, &m_data->xboxApiToken, "http://xboxlive.com", "Xbox"));
+            m_steps.append(
+                makeShared<XboxAuthorizationStep>(m_data, &m_data->mojangservicesToken,
+                                                  "rp://api.minecraftservices.com/", "Mojang"));
             m_steps.append(makeShared<LauncherLoginStep>(m_data));
             m_steps.append(makeShared<XboxProfileStep>(m_data));
             m_steps.append(makeShared<EntitlementsStep>(m_data));
             m_steps.append(makeShared<MinecraftProfileStep>(m_data));
             m_steps.append(makeShared<GetSkinStep>(m_data));
-        } break;
-        case AccountType::Elyby: {
-            if (action == Action::DeviceCode) {
+        }
+        break;
+    case AccountType::Elyby:
+        {
+            if (action == Action::DeviceCode)
+            {
                 auto oauthStep = makeShared<ElyDeviceCodeStep>(m_data);
-                connect(oauthStep.get(), &ElyDeviceCodeStep::authorizeWithBrowser, this, &AuthFlow::authorizeWithBrowserWithExtra);
+                connect(oauthStep.get(), &ElyDeviceCodeStep::authorizeWithBrowser, this,
+                        &AuthFlow::authorizeWithBrowserWithExtra);
                 connect(this, &Task::aborted, oauthStep.get(), &ElyDeviceCodeStep::abort);
                 m_steps.append(oauthStep);
-            } else {
+            }
+            else
+            {
                 auto oauthStep = makeShared<ElyStep>(m_data, action == Action::Refresh);
                 connect(oauthStep.get(), &ElyStep::authorizeWithBrowser, this, &AuthFlow::authorizeWithBrowser);
                 m_steps.append(oauthStep);
             }
             m_steps.append(makeShared<MinecraftProfileStepEly>(m_data));
             m_steps.append(makeShared<GetSkinStep>(m_data));
-        } break;
-        case AccountType::Custom: {
+        }
+        break;
+    case AccountType::Custom:
+        {
             m_steps.append(makeShared<CustomAuthStep>(m_data, action, std::move(password)));
-        } break;
-        default:
-            break;
+        }
+        break;
+    case AccountType::Yggdrasil:
+        {
+            m_steps.append(makeShared<YggdrasilAuthStep>(m_data, action, std::move(password)));
+            m_steps.append(makeShared<YggdrasilProfileStep>(m_data));
+            m_steps.append(makeShared<GetSkinStep>(m_data));
+        }
+    default:
+        break;
     }
 
     changeState(AccountTaskState::STATE_CREATED);
@@ -92,10 +120,12 @@ void AuthFlow::executeTask()
 
 void AuthFlow::nextStep()
 {
-    if (!Task::isRunning()) {
+    if (!Task::isRunning())
+    {
         return;
     }
-    if (m_steps.size() == 0) {
+    if (m_steps.size() == 0)
+    {
         // we got to the end without an incident... assume this is all.
         m_currentStep.reset();
         succeed();
@@ -119,59 +149,69 @@ bool AuthFlow::changeState(AccountTaskState newState, QString reason)
 {
     m_taskState = newState;
     setDetails(reason);
-    switch (newState) {
-        case AccountTaskState::STATE_CREATED: {
+    switch (newState)
+    {
+    case AccountTaskState::STATE_CREATED:
+        {
             setStatus(tr("Waiting..."));
             m_data->errorString.clear();
             return true;
         }
-        case AccountTaskState::STATE_WORKING: {
+    case AccountTaskState::STATE_WORKING:
+        {
             setStatus(m_currentStep ? m_currentStep->describe() : tr("Working..."));
             m_data->accountState = AccountState::Working;
             return true;
         }
-        case AccountTaskState::STATE_SUCCEEDED: {
+    case AccountTaskState::STATE_SUCCEEDED:
+        {
             setStatus(tr("Authentication task succeeded."));
             m_data->accountState = AccountState::Online;
             emitSucceeded();
             return false;
         }
-        case AccountTaskState::STATE_OFFLINE: {
+    case AccountTaskState::STATE_OFFLINE:
+        {
             setStatus(tr("Failed to contact the authentication server."));
             m_data->errorString = reason;
             m_data->accountState = AccountState::Offline;
             emitFailed(reason);
             return false;
         }
-        case AccountTaskState::STATE_DISABLED: {
+    case AccountTaskState::STATE_DISABLED:
+        {
             setStatus(tr("Client ID has changed. New session needs to be created."));
             m_data->errorString = reason;
             m_data->accountState = AccountState::Disabled;
             emitFailed(reason);
             return false;
         }
-        case AccountTaskState::STATE_FAILED_SOFT: {
+    case AccountTaskState::STATE_FAILED_SOFT:
+        {
             setStatus(tr("Encountered an error during authentication."));
             m_data->errorString = reason;
             m_data->accountState = AccountState::Errored;
             emitFailed(reason);
             return false;
         }
-        case AccountTaskState::STATE_FAILED_HARD: {
+    case AccountTaskState::STATE_FAILED_HARD:
+        {
             setStatus(tr("Failed to authenticate. The session has expired."));
             m_data->errorString = reason;
             m_data->accountState = AccountState::Expired;
             emitFailed(reason);
             return false;
         }
-        case AccountTaskState::STATE_FAILED_GONE: {
+    case AccountTaskState::STATE_FAILED_GONE:
+        {
             setStatus(tr("Failed to authenticate. The account no longer exists."));
             m_data->errorString = reason;
             m_data->accountState = AccountState::Gone;
             emitFailed(reason);
             return false;
         }
-        default: {
+    default:
+        {
             setStatus(tr("..."));
             QString error = tr("Unknown account task state: %1").arg(int(newState));
             m_data->accountState = AccountState::Errored;
@@ -180,6 +220,7 @@ bool AuthFlow::changeState(AccountTaskState newState, QString reason)
         }
     }
 }
+
 bool AuthFlow::abort()
 {
     emitAborted();
