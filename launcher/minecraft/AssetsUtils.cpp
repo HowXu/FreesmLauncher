@@ -286,7 +286,7 @@ Net::NetRequest::Ptr AssetObject::getDownloadAction()
             objectDL->addValidator(new Net::ChecksumValidator(QCryptographicHash::Sha1, hash));
         }
         objectDL->setProgress(objectDL->getProgress(), size);
-        return objectDL;
+        return objectDL; 
     }
     return nullptr;
 }
@@ -298,6 +298,10 @@ QString AssetObject::getLocalPath()
 
 QUrl AssetObject::getUrl()
 {
+    if (APPLICATION->settings()->get("useBMCL").toBool())
+    {
+        return BuildConfig.RESOURCE_BASE_BMCL + getRelPath();
+    }
     return BuildConfig.RESOURCE_BASE + getRelPath();
 }
 

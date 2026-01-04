@@ -401,21 +401,46 @@ bool ModrinthCreationTask::parseManifest(const QString& index_path,
                 // (as Modrinth seems to incorrectly handle spaces)
 
                 auto download_arr = Json::ensureArray(modInfo, "downloads");
+                // some packs use curseforge and modrinth at the same time, but modrinth is a better choice;
+                bool has_modrinth_url = false;
+                QUrl modrinth_download_url = QUrl();
+                QUrl perment_usable_url;
                 for (auto download : download_arr) {
                     qWarning() << download.toString();
                     bool is_last = download.toString() == download_arr.last().toString();
 
                     auto download_url = QUrl(download.toString());
-
-                    if (!download_url.isValid()) {
+                    
+                    if (!download_url.isValid())
+                    {
                         qDebug()
                             << QString("Download URL (%1) for %2 is not a correctly formatted URL").arg(download_url.toString(), file.path);
-                        if (is_last && file.downloads.isEmpty())
-                            throw JSONValidationError(tr("Download URL for %1 is not a correctly formatted URL").arg(file.path));
-                    } else {
-                        file.downloads.push_back(download_url);
+                    }else
+                    {
+                        if (download_url.toString().contains("modrinth"))
+                        {
+                            has_modrinth_url = true;
+                            modrinth_download_url = download_url;
+                        }
+                        // be sure there is always a correct url
+                        perment_usable_url = download_url;
                     }
+                    
+                    if (is_last)
+                    {
+                        if (!perment_usable_url.isEmpty())
+                        {
+                            file.downloads.push_back(has_modrinth_url ? modrinth_download_url:perment_usable_url);
+                            if (file.downloads.isEmpty())
+                                throw JSONValidationError(tr("Download URL for %1 is not a correctly formatted URL").arg(file.path));
+                        }else
+                        {
+                            throw JSONValidationError(tr(" No Download URL available for %1.").arg(file.path));
+                        }
+                    }
+                    
                 }
+                
 
                 (file.required ? files : optionalFiles).push_back(file);
             }

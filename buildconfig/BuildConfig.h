@@ -185,7 +185,9 @@ class Config {
     QString SUBREDDIT_URL;
 
     QString RESOURCE_BASE = "https://resources.download.minecraft.net/";
+    QString RESOURCE_BASE_BMCL = "https://bmclapi2.bangbang93.com/assets/";
     QString LIBRARY_BASE = "https://libraries.minecraft.net/";
+    QString LIBRARY_BASE_BMCL = "https://bmclapi2.bangbang93.com/maven/";
     QString IMGUR_BASE_URL = "https://api.imgur.com/3/";
     QString FMLLIBS_BASE_URL;
     QString TRANSLATION_FILES_URL;

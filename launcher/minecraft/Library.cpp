@@ -34,6 +34,9 @@
  */
 
 #include "Library.h"
+
+#include <Application.h>
+
 #include "MinecraftInstance.h"
 #include "net/NetRequest.h"
 
@@ -204,6 +207,10 @@ QList<Net::NetRequest::Ptr> Library::getDownloads(const RuntimeContext& runtimeC
             }
 
             if (m_repositoryURL.isEmpty()) {
+                if (APPLICATION->settings()->get("useBMCL").toBool())
+                {
+                    return BuildConfig.LIBRARY_BASE_BMCL + raw_storage;
+                }
                 return BuildConfig.LIBRARY_BASE + raw_storage;
             }
 

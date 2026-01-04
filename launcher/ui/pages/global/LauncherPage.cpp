@@ -279,6 +279,7 @@ void LauncherPage::applySettings()
     s->set("ModMetadataDisabled", ui->metadataDisableBtn->isChecked());
     s->set("ModDependenciesDisabled", ui->dependenciesDisableBtn->isChecked());
     s->set("SkipModpackUpdatePrompt", ui->skipModpackUpdatePromptBtn->isChecked());
+    s->set("useBMCL",ui->useBMCLBtn->isChecked());
 
     const auto showInDiscord = ui->discordBtn->isChecked();
     s->set("AlwaysShowInDiscord", showInDiscord);
@@ -358,6 +359,7 @@ void LauncherPage::loadSettings()
     ui->metadataWarningLabel->setHidden(!ui->metadataDisableBtn->isChecked());
     ui->dependenciesDisableBtn->setChecked(s->get("ModDependenciesDisabled").toBool());
     ui->skipModpackUpdatePromptBtn->setChecked(s->get("SkipModpackUpdatePrompt").toBool());
+    ui->useBMCLBtn->setChecked(s->get("useBMCL").toBool());
 
     ui->discordBtn->setChecked(s->get("AlwaysShowInDiscord").toBool());
 }

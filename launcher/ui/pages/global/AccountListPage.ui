@@ -56,6 +56,7 @@
    <addaction name="actionAddOffline"/>
    <addaction name="actionAddElyby"/>
    <addaction name="actionAddCustom"/>
+   <addaction name="actionAddYggdrasil"/>
    <addaction name="actionRefresh"/>
    <addaction name="actionRemove"/>
    <addaction name="actionSetDefault"/>
@@ -121,6 +122,14 @@
    </property>
    <property name="toolTip">
     <string>Add custom authentication system account</string>
+   </property>
+  </action>
+  <action name="actionAddYggdrasil">
+   <property name="text">
+    <string>Add Yggdrasil</string>
+   </property>
+   <property name="toolTip">
+    <string>Add yggdrasil authentication system account</string>
    </property>
   </action>
  </widget>

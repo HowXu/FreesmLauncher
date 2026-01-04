@@ -331,6 +331,16 @@
                 </property>
                </widget>
               </item>
+              <item>
+               <widget class="QCheckBox" name="useBMCLBtn">
+                <property name="toolTip">
+                 <string>Use BMCL for minecrafr download.</string>
+                </property>
+                <property name="text">
+                 <string>Use BMCL Mirror</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
@@ -720,6 +730,7 @@
   <tabstop>metadataDisableBtn</tabstop>
   <tabstop>dependenciesDisableBtn</tabstop>
   <tabstop>skipModpackUpdatePromptBtn</tabstop>
+  <tabstop>useBMCLBtn</tabstop>
   <tabstop>numberOfConcurrentTasksSpinBox</tabstop>
   <tabstop>numberOfConcurrentDownloadsSpinBox</tabstop>
   <tabstop>numberOfManualRetriesSpinBox</tabstop>
