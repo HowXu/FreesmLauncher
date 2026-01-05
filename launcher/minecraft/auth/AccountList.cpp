@@ -315,7 +315,7 @@ QVariant AccountList::data(const QModelIndex& index, int role) const
                         case AccountType::Custom: {
                             return tr("Custom", "Account type");
                         }
-                    case AccountType::Yggdrasil:{
+                        case AccountType::Yggdrasil:{
                             return tr("Yggdrasil", "Account type");
                         }
                     }

@@ -382,7 +382,7 @@ QJsonObject AccountData::saveState() const
             output["refresh-url"] = refreshUrl;
         } break;
         case AccountType::Yggdrasil:{
-            output["type"] = "Custom";
+            output["type"] = "Yggdrasil";
             output["custom-client-id"] = clientID;
             output["auth-url"] = authUrl;
             output["login-url"] = loginUrl;

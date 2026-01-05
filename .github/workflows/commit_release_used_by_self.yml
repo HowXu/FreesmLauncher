@@ -1,0 +1,21 @@
+name: commit_release_used_by_self.yml
+on:
+  push:
+    branches-ignore:
+      - "renovate/**"
+      - "docs/**"
+    paths-ignore:
+      - "docs"
+      - "**.md"
+      - "flake.lock"
+      - "packages"
+      - ".github/ISSUE_TEMPLATE"
+      - ".markdownlint"
+
+jobs:
+  build_release:
+    name: Build Release
+    uses: ./.github/workflows/build.yml
+    with:
+      build_type: Release
+      is_qt_cached: false

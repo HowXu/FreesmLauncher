@@ -24,6 +24,7 @@
 #include "minecraft/auth/elyby/ElybyAccount.h"
 #include "minecraft/auth/msa/MSAAccount.h"
 #include "minecraft/auth/offline/OfflineAccount.h"
+#include "yggdrasil/YggdrasilAccount.h"
 
 BaseAccount::BaseAccount(QObject* parent) : QObject(parent)
 {
@@ -42,7 +43,9 @@ BaseAccountPtr BaseAccount::loadFromJsonV3(const QJsonObject& json)
         account = makeShared<ElybyAccount>();
     } else if (type == "Custom") {
         account = makeShared<CustomAccount>();
-    } else {
+    } else if (type == "Yggdrasil"){
+        account = makeShared<YggdrasilAccount>();
+    }else{
         qDebug() << "Unrecognized account type, skipped";
         return nullptr;
     }
