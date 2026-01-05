@@ -33,6 +33,7 @@
  *      limitations under the License.
  */
 
+#include <BuildConfig.h>
 #include <QTest>
 
 #include <FileSystem.h>
@@ -244,7 +245,15 @@ class LibraryTest : public QObject {
             auto dls = test->getDownloads(r, cache.get(), failedFiles, QString());
             QCOMPARE(dls.size(), 1);
             QCOMPARE(failedFiles, {});
-            QCOMPARE(dls[0]->url(), QUrl("https://libraries.minecraft.net/com/paulscode/codecwav/20101023/codecwav-20101023.jar"));
+            // must change for mirror
+            if (BuildConfig.useBMCL || BuildConfig.useFullBMCL)
+            {
+                QCOMPARE(dls[0]->url(), QUrl("https://bmclapi2.bangbang93.com/maven/com/paulscode/codecwav/20101023/codecwav-20101023.jar"));
+            }else
+            {
+                QCOMPARE(dls[0]->url(), QUrl("https://libraries.minecraft.net/com/paulscode/codecwav/20101023/codecwav-20101023.jar"));
+            }
+                
         }
         r.system = "osx";
         test->setHint("local");
@@ -300,8 +309,16 @@ class LibraryTest : public QObject {
         auto dls = test->getDownloads(r, cache.get(), failedFiles, QString());
         QCOMPARE(dls.size(), 1);
         QCOMPARE(failedFiles, {});
-        QCOMPARE(dls[0]->url(), QUrl("https://libraries.minecraft.net/org/lwjgl/lwjgl/lwjgl-platform/2.9.4-nightly-20150209/"
+        // must change for mirror
+        if (BuildConfig.useBMCL || BuildConfig.useFullBMCL)
+        {
+            QCOMPARE(dls[0]->url(), QUrl("https://bmclapi2.bangbang93.com/maven/org/lwjgl/lwjgl/lwjgl-platform/2.9.4-nightly-20150209/"
                                      "lwjgl-platform-2.9.4-nightly-20150209-natives-osx.jar"));
+        }else
+        {
+            QCOMPARE(dls[0]->url(), QUrl("https://libraries.minecraft.net/org/lwjgl/lwjgl/lwjgl-platform/2.9.4-nightly-20150209/"
+                                     "lwjgl-platform-2.9.4-nightly-20150209-natives-osx.jar"));
+        }
     }
     void test_onenine_native_arch()
     {
@@ -317,10 +334,20 @@ class LibraryTest : public QObject {
         auto dls = test->getDownloads(r, cache.get(), failedFiles, QString());
         QCOMPARE(dls.size(), 2);
         QCOMPARE(failedFiles, {});
-        QCOMPARE(dls[0]->url(),
+        if (BuildConfig.useBMCL || BuildConfig.useFullBMCL)
+        {
+            QCOMPARE(dls[0]->url(),
+                 QUrl("https://bmclapi2.bangbang93.com/maven/tv/twitch/twitch-platform/5.16/twitch-platform-5.16-natives-windows-32.jar"));
+            QCOMPARE(dls[1]->url(),
+                     QUrl("https://bmclapi2.bangbang93.com/maven/tv/twitch/twitch-platform/5.16/twitch-platform-5.16-natives-windows-64.jar"));
+        }else
+        {
+            QCOMPARE(dls[0]->url(),
                  QUrl("https://libraries.minecraft.net/tv/twitch/twitch-platform/5.16/twitch-platform-5.16-natives-windows-32.jar"));
-        QCOMPARE(dls[1]->url(),
-                 QUrl("https://libraries.minecraft.net/tv/twitch/twitch-platform/5.16/twitch-platform-5.16-natives-windows-64.jar"));
+            QCOMPARE(dls[1]->url(),
+                     QUrl("https://libraries.minecraft.net/tv/twitch/twitch-platform/5.16/twitch-platform-5.16-natives-windows-64.jar"));
+        }
+        
     }
 
    private:
