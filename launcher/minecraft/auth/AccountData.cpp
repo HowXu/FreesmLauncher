@@ -294,7 +294,9 @@ bool AccountData::resumeStateFromV3(QJsonObject data)
         type = AccountType::Elyby;
     } else if (typeS == "Custom") {
         type = AccountType::Custom;
-    } else {
+    } else if (typeS == "Yggdrasil"){
+        type = AccountType::Yggdrasil;
+    }else {
         qWarning() << "Failed to parse account data: type is not recognized.";
         return false;
     }
@@ -324,6 +326,12 @@ bool AccountData::resumeStateFromV3(QJsonObject data)
             authUrl = data.value("auth-url").toString();
             loginUrl = data.value("login-url").toString();
             refreshUrl = data.value("refresh-url").toString();
+        }break;
+        case AccountType::Yggdrasil:{
+                clientID = data.value("custom-client-id").toString();
+                authUrl = data.value("auth-url").toString();
+                loginUrl = data.value("login-url").toString();
+                refreshUrl = data.value("refresh-url").toString();
         }
     }
 
@@ -373,6 +381,13 @@ QJsonObject AccountData::saveState() const
             output["login-url"] = loginUrl;
             output["refresh-url"] = refreshUrl;
         } break;
+        case AccountType::Yggdrasil:{
+            output["type"] = "Custom";
+            output["custom-client-id"] = clientID;
+            output["auth-url"] = authUrl;
+            output["login-url"] = loginUrl;
+            output["refresh-url"] = refreshUrl;
+        }
     }
 
     tokenToJSONV3(output, yggdrasilToken, "ygg");

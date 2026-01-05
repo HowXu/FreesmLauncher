@@ -181,7 +181,7 @@ void BaseAccount::fillSession(AuthSessionPtr session, SettingsObjectPtr instance
     }
 
     const auto useAuthlibInjector = instanceSettings->get("UseElyAuthlibInjector").toBool();
-    if ((accountType() == AccountType::Elyby && useAuthlibInjector) || accountType() == AccountType::Custom) {
+    if ((accountType() == AccountType::Elyby && useAuthlibInjector) || accountType() == AccountType::Custom || accountType() == AccountType::Yggdrasil) {
         session->wants_authlib_injector = true;
     }
 
@@ -192,6 +192,9 @@ void BaseAccount::fillSession(AuthSessionPtr session, SettingsObjectPtr instance
         case AccountType::Custom: {
             session->authlib_injector_auth_url = data.authUrl;
         } break;
+        case AccountType::Yggdrasil:{
+            session->authlib_injector_auth_url = data.authUrl;
+        }break;
         default:
             break;
     }

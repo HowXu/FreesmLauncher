@@ -27,7 +27,10 @@ ApplyAuthlibInjector::ApplyAuthlibInjector(LaunchTask* parent, AuthSessionPtr se
 
 void ApplyAuthlibInjector::executeTask()
 {
-    const QString downloadUrl = "https://github.com/yushijinhun/authlib-injector/releases/download/v1.2.5/authlib-injector-1.2.5.jar";
+    const QString downloadUrl = APPLICATION->settings()->get("useBMCL").toBool() ? 
+    "https://bmclapi2.bangbang93.com/mirrors/authlib-injector/artifact/55/authlib-injector-1.2.7.jar"
+    : "https://github.com/yushijinhun/authlib-injector/releases/download/v1.2.5/authlib-injector-1.2.5.jar";
+        
     m_request = Net::Download::makeFile(downloadUrl, "authlib-injector.jar");
 
     m_task.reset(new NetJob("Download authlib-injector", APPLICATION->network()));
