@@ -696,6 +696,8 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
         m_settings->registerSetting("ModDependenciesDisabled", false);
         m_settings->registerSetting("SkipModpackUpdatePrompt", false);
         m_settings->registerSetting("useBMCL",true);
+        m_settings->registerSetting("useFullBMCL",false);
+        m_settings->registerSetting("ModrinthPrior",true);
 
         // Minecraft offline player name
         m_settings->registerSetting("LastOfflinePlayerName", "");

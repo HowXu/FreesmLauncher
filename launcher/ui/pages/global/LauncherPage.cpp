@@ -211,6 +211,20 @@ void LauncherPage::on_metadataDisableBtn_clicked()
     ui->metadataWarningLabel->setHidden(!ui->metadataDisableBtn->isChecked());
 }
 
+// BMCL API invoke
+
+void LauncherPage::on_useBMCLBtn_clicked()
+{
+    BuildConfig.useBMCL = ui->useBMCLBtn->isChecked();
+    qDebug() << "useBMCL switch to" << BuildConfig.useBMCL;
+}
+
+void LauncherPage::on_useFullBMCLBtn_clicked()
+{
+    BuildConfig.useFullBMCL = ui->useFullBMCLBtn->isChecked();
+    qDebug() << "useFullBMCL switch to" << BuildConfig.useFullBMCL;
+}
+
 void LauncherPage::applySettings()
 {
     auto s = APPLICATION->settings();
@@ -280,6 +294,8 @@ void LauncherPage::applySettings()
     s->set("ModDependenciesDisabled", ui->dependenciesDisableBtn->isChecked());
     s->set("SkipModpackUpdatePrompt", ui->skipModpackUpdatePromptBtn->isChecked());
     s->set("useBMCL",ui->useBMCLBtn->isChecked());
+    s->set("useFullBMCL",ui->useFullBMCLBtn->isChecked());
+    s->set("ModrinthPrior",ui->ModrinthPriorBtn->isChecked());
 
     const auto showInDiscord = ui->discordBtn->isChecked();
     s->set("AlwaysShowInDiscord", showInDiscord);
@@ -360,6 +376,12 @@ void LauncherPage::loadSettings()
     ui->dependenciesDisableBtn->setChecked(s->get("ModDependenciesDisabled").toBool());
     ui->skipModpackUpdatePromptBtn->setChecked(s->get("SkipModpackUpdatePrompt").toBool());
     ui->useBMCLBtn->setChecked(s->get("useBMCL").toBool());
+    ui->useFullBMCLBtn->setChecked(s->get("useFullBMCL").toBool());
+    ui->ModrinthPriorBtn->setChecked(s->get("ModrinthPrior").toBool());
+    
+    // for first use
+    BuildConfig.useBMCL = s->get("useBMCL").toBool();
+    BuildConfig.useFullBMCL = s->get("useFullBMCL").toBool();
 
     ui->discordBtn->setChecked(s->get("AlwaysShowInDiscord").toBool());
 }

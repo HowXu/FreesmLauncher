@@ -76,6 +76,9 @@ class LauncherPage : public QWidget, public BasePage {
     void on_javaDirBrowseBtn_clicked();
     void on_skinsDirBrowseBtn_clicked();
     void on_metadataDisableBtn_clicked();
+    
+    void on_useBMCLBtn_clicked();
+    void on_useFullBMCLBtn_clicked();
 
     /*!
      * Updates the font preview

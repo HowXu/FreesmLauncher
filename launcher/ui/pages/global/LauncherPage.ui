@@ -334,10 +334,30 @@
               <item>
                <widget class="QCheckBox" name="useBMCLBtn">
                 <property name="toolTip">
-                 <string>Use BMCL for minecrafr download.</string>
+                 <string>Use limited BMCL for minecrafr download.</string>
                 </property>
                 <property name="text">
-                 <string>Use BMCL Mirror</string>
+                 <string>Use Limited BMCL Mirror</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="useFullBMCLBtn">
+                <property name="toolTip">
+                 <string>Use full BMCL for minecrafr download.</string>
+                </property>
+                <property name="text">
+                 <string>Use Full BMCL Mirror</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="ModrinthPriorBtn">
+                <property name="toolTip">
+                 <string>Use Modrinth download at first.</string>
+                </property>
+                <property name="text">
+                 <string>Modrinth Prior Download</string>
                 </property>
                </widget>
               </item>
@@ -731,6 +751,8 @@
   <tabstop>dependenciesDisableBtn</tabstop>
   <tabstop>skipModpackUpdatePromptBtn</tabstop>
   <tabstop>useBMCLBtn</tabstop>
+  <tabstop>useFullBMCLBtn</tabstop>
+  <tabstop>ModrinthPrior</tabstop>
   <tabstop>numberOfConcurrentTasksSpinBox</tabstop>
   <tabstop>numberOfConcurrentDownloadsSpinBox</tabstop>
   <tabstop>numberOfManualRetriesSpinBox</tabstop>

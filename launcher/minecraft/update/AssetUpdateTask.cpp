@@ -1,12 +1,12 @@
 #include "AssetUpdateTask.h"
 
-#include "launch/LaunchStep.h"
 #include "minecraft/AssetsUtils.h"
 #include "minecraft/MinecraftInstance.h"
 #include "minecraft/PackProfile.h"
 #include "net/ChecksumValidator.h"
 
 #include "Application.h"
+#include "BuildConfig.h"
 
 #include "net/ApiDownload.h"
 
@@ -25,7 +25,7 @@ void AssetUpdateTask::executeTask()
     QString localPath = assets->id + ".json";
     auto job = makeShared<NetJob>(tr("Asset index for %1").arg(m_inst->name()), APPLICATION->network());
     
-    if (APPLICATION->settings()->get("useBMCL").toBool())
+    if (APPLICATION->settings()->get("useFullBMCL").toBool())
     {
         auto url = indexUrl.toString();
         url.replace("https://launchermeta.mojang.com", "https://bmclapi2.bangbang93.com");

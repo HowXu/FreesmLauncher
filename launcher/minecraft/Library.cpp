@@ -35,8 +35,6 @@
 
 #include "Library.h"
 
-#include <Application.h>
-
 #include "MinecraftInstance.h"
 #include "net/NetRequest.h"
 
@@ -149,7 +147,7 @@ QList<Net::NetRequest::Ptr> Library::getDownloads(const RuntimeContext& runtimeC
         // Don't add a time limit for the libraries cache entry validity
         options |= Net::Download::Option::MakeEternal;
         // here replace the url for download
-        if (APPLICATION->settings()->get("useBMCL").toBool())
+        if (BuildConfig.useBMCL || BuildConfig.useFullBMCL)
         {
             // Fabric
             url.replace("https://meta.fabricmc.net", "https://bmclapi2.bangbang93.com/fabric-meta");
@@ -160,7 +158,7 @@ QList<Net::NetRequest::Ptr> Library::getDownloads(const RuntimeContext& runtimeC
             url.replace("https://maven.neoforged.net/releases", "https://bmclapi2.bangbang93.com/maven");
             // Libraries
             url.replace("https://libraries.minecraft.net", "https://bmclapi2.bangbang93.com/maven");
-            // do not change https://resources.download.minecraft.net/ it's fast enough
+            // client piston-data.mojang.com there is no mirror
         }
         if (sha1.size()) {
             auto dl = Net::ApiDownload::makeCached(url, entry, options);
